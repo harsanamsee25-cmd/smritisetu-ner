@@ -52,6 +52,16 @@ export const Header = () => {
         {/* CONDITION 1: SIMPLIFIED ELDERLY PATIENT HEADER */}
         {viewMode === 'patient' ? (
           <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Language Switch Button */}
+            <button
+              onClick={() => openModal('languages')}
+              className="px-2.5 py-1.5 rounded-xl bg-white border border-teal-200 text-teal-900 text-xs sm:text-sm font-extrabold hover:bg-teal-50 flex items-center space-x-1 shadow-sm"
+              title="Change Language"
+            >
+              <Globe className="w-4 h-4 text-teal-700" />
+              <span>{lang === 'en' ? 'ENG | অসমীয়া' : 'অসমীয়া'}</span>
+            </button>
+
             {/* Audio Toggle */}
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}

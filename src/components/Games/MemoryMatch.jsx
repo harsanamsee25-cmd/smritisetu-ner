@@ -5,24 +5,32 @@ import { soundManager } from '../../utils/audio';
 import { Sparkles, RotateCcw, HelpCircle, Award } from 'lucide-react';
 
 export const MemoryMatch = () => {
-  const { openModal, aiDifficulty, setProfile, t } = useApp();
+  const { openModal, aiDifficulty, recordSessionAndPredict, lastPrediction, setProfile, t } = useApp();
 
-  const [pairCount, setPairCount] = useState(4); // default 4 pairs (8 cards), reduces to 3 if AI adapts
+  // Configure pairs based on ML difficulty prediction: gentle = 3, adaptive = 4, challenging = 5
+  const getPairCountFromDifficulty = (diffStr) => {
+    if (diffStr === 'gentle') return 3;
+    if (diffStr === 'challenging') return 5;
+    return 4; // adaptive default
+  };
+
+  const [pairCount, setPairCount] = useState(() => getPairCountFromDifficulty(aiDifficulty));
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [attempts, setAttempts] = useState(0);
   const [unsuccessfulStreak, setUnsuccessfulStreak] = useState(0);
-  const [aiAdapted, setAiAdapted] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState('Select any card to begin!');
   const [startTime, setStartTime] = useState(null);
 
-  // Initialize and shuffle cards
+  // Re-initialize cards when ML difficulty changes
   useEffect(() => {
-    resetGame(pairCount);
-  }, [pairCount]);
+    const nextPairs = getPairCountFromDifficulty(aiDifficulty);
+    setPairCount(nextPairs);
+    resetGame(nextPairs);
+  }, [aiDifficulty]);
 
-  const resetGame = (numPairs = 4) => {
+  const resetGame = (numPairs = pairCount) => {
     const selected = MEMORY_MATCH_CARDS.slice(0, numPairs);
     const deck = [...selected, ...selected]
       .map((item, index) => ({
@@ -36,7 +44,6 @@ export const MemoryMatch = () => {
     setMatchedPairs([]);
     setAttempts(0);
     setUnsuccessfulStreak(0);
-    setAiAdapted(false);
     setFeedbackMsg('Take your time. Match the identical pairs! ❤️');
     setStartTime(Date.now());
   };
@@ -52,7 +59,8 @@ export const MemoryMatch = () => {
 
     // If two cards are now flipped
     if (newFlipped.length === 2) {
-      setAttempts(prev => prev + 1);
+      const nextAttempts = attempts + 1;
+      setAttempts(nextAttempts);
       const firstCard = cards[newFlipped[0]];
       const secondCard = cards[newFlipped[1]];
 
@@ -69,7 +77,19 @@ export const MemoryMatch = () => {
         if (newMatched.length === pairCount) {
           const totalSeconds = Math.round((Date.now() - (startTime || Date.now())) / 1000);
           
-          // Update profile cognitive count
+          // Execute ML Inference Prediction Pipeline
+          const sessionMetrics = {
+            gameTitle: 'North East Heritage Memory Match',
+            score: pairCount,
+            maxScore: pairCount,
+            accuracy: Number((pairCount / nextAttempts).toFixed(2)),
+            timeSeconds: totalSeconds,
+            attempts: nextAttempts,
+            hintsUsed: 0
+          };
+
+          const mlPrediction = recordSessionAndPredict(sessionMetrics);
+
           setProfile(prev => ({
             ...prev,
             cognitiveSessionsCompleted: prev.cognitiveSessionsCompleted + 1
@@ -82,7 +102,8 @@ export const MemoryMatch = () => {
               score: pairCount,
               maxScore: pairCount,
               timeSeconds: totalSeconds,
-              attempts: attempts + 1,
+              attempts: nextAttempts,
+              prediction: mlPrediction,
               encouragement: `Shabash! You remembered all ${pairCount} pairs today.`
             });
           }, 600);
@@ -90,24 +111,9 @@ export const MemoryMatch = () => {
       } else {
         // NO MATCH (GENTLE REASSURANCE - NO PENALTY)
         setFeedbackMsg("Good try! Take another look. 😊");
-        const nextStreak = unsuccessfulStreak + 1;
-        setUnsuccessfulStreak(nextStreak);
-
-        // Dynamic Difficulty Trigger Simulation (4 pairs -> 3 pairs)
-        if (nextStreak >= 3 && pairCount > 3 && !aiAdapted) {
-          setTimeout(() => {
-            setAiAdapted(true);
-            setFeedbackMsg("Auto-Adjusting: Let's make this a little easier for you. ❤️");
-            // Automatically switch from 4 pairs to 3 pairs for comfort
-            setTimeout(() => {
-              setPairCount(3);
-            }, 1200);
-          }, 800);
-        } else {
-          setTimeout(() => {
-            setFlippedCards([]);
-          }, 1200);
-        }
+        setTimeout(() => {
+          setFlippedCards([]);
+        }, 1200);
       }
     }
   };
@@ -117,33 +123,43 @@ export const MemoryMatch = () => {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-teal-100">
         <div>
-          <span className="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase">
-            Game 1 • Cultural Memory Match
-          </span>
+          <div className="flex items-center space-x-2">
+            <span className="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full uppercase">
+              Game 1 • Cultural Memory Match
+            </span>
+            <span className="bg-amber-100 text-amber-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase">
+              {aiDifficulty.toUpperCase()} ({pairCount} Pairs)
+            </span>
+          </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-teal-950 mt-1">
             🫖 North East Heritage Memory Match
           </h2>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={() => resetGame(pairCount)}
-            className="px-4 py-2 bg-teal-50 hover:bg-teal-100 text-teal-900 font-bold rounded-xl text-sm border border-teal-200 flex items-center space-x-1.5 transition"
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>Reset Game</span>
-          </button>
-        </div>
+        <button
+          onClick={() => resetGame(pairCount)}
+          className="px-4 py-2 bg-teal-50 hover:bg-teal-100 text-teal-900 font-bold rounded-xl text-sm border border-teal-200 flex items-center space-x-1.5 transition"
+        >
+          <RotateCcw className="w-4 h-4" />
+          <span>Reset Game</span>
+        </button>
       </div>
 
-      {/* Auto-Adjusting Difficulty Simulation Alert Banner */}
-      {aiAdapted && (
-        <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl text-amber-950 text-sm font-semibold flex items-center space-x-3 animate-fadeIn">
-          <Sparkles className="w-6 h-6 text-amber-600 flex-shrink-0" />
-          <div>
-            <strong className="block text-amber-900 text-base font-extrabold">Auto-Adjusting Difficulty</strong>
-            You took a little longer today, so SmritiSetu gently reduced the card count from 4 pairs to 3 pairs.
+      {/* ML Prediction Badge Notification */}
+      {lastPrediction && (
+        <div className="mb-6 p-4 bg-teal-50 border border-teal-200 rounded-2xl text-teal-950 text-sm font-semibold flex items-center justify-between gap-3 animate-fadeIn">
+          <div className="flex items-center space-x-3">
+            <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0" />
+            <div>
+              <span className="text-xs font-extrabold text-teal-800 uppercase tracking-wider block">
+                ML-POWERED ADAPTIVE LEVEL: <strong className="text-teal-950 uppercase">{aiDifficulty}</strong>
+              </span>
+              <p className="text-xs text-gray-600 mt-0.5">{lastPrediction.reason}</p>
+            </div>
           </div>
+          <span className="bg-amber-100 text-amber-900 text-xs font-extrabold px-2.5 py-1 rounded-lg border border-amber-300 flex-shrink-0">
+            Confidence: {lastPrediction.confidence}%
+          </span>
         </div>
       )}
 
@@ -156,7 +172,7 @@ export const MemoryMatch = () => {
 
       {/* Memory Match Grid (Large Touch Targets) */}
       <div className={`grid gap-4 sm:gap-6 mb-8 max-w-2xl mx-auto ${
-        pairCount === 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'
+        pairCount <= 3 ? 'grid-cols-3' : pairCount === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2 sm:grid-cols-5'
       }`}>
         {cards.map((card, index) => {
           const isFlipped = flippedCards.includes(index);

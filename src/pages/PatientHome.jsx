@@ -16,6 +16,8 @@ export const PatientHome = () => {
     handlePlayVoice,
     handleStopVoice,
     openModal,
+    lang,
+    setLang,
     t
   } = useApp();
 
@@ -37,9 +39,19 @@ export const PatientHome = () => {
 
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center space-x-2 bg-white/15 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-amber-300 border border-white/20">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Assam Care Companion Active</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center space-x-2 bg-white/15 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-amber-300 border border-white/20">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Assam Care Companion Active</span>
+              </div>
+
+              {/* Language Switcher Pill */}
+              <button
+                onClick={() => openModal('languages')}
+                className="bg-amber-400 hover:bg-amber-300 text-teal-950 font-extrabold text-xs px-3 py-1 rounded-full border border-amber-300 shadow-sm transition active:scale-95 flex items-center space-x-1"
+              >
+                <span>🌐 {lang === 'en' ? 'English | অসমীয়া' : 'অসমীয়া (অসমিয়া)'}</span>
+              </button>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">

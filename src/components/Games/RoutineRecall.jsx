@@ -1,26 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ROUTINE_STEPS } from '../../data/mockData';
 import { soundManager } from '../../utils/audio';
-import { RotateCcw, HelpCircle, CheckCircle2, Sparkles, ArrowDown } from 'lucide-react';
+import { RotateCcw, HelpCircle, CheckCircle2, Sparkles } from 'lucide-react';
 
 export const RoutineRecall = () => {
-  const { openModal, setProfile, t } = useApp();
+  const { openModal, aiDifficulty, recordSessionAndPredict, lastPrediction, setProfile, t } = useApp();
 
-  // Randomize initial order for sequencing challenge
-  const [availableCards, setAvailableCards] = useState(() => {
-    return [...ROUTINE_STEPS].sort(() => Math.random() - 0.5);
-  });
+  const getStepCountFromDifficulty = (diffStr) => {
+    if (diffStr === 'gentle') return 3;
+    return 4; // adaptive & challenging
+  };
+
+  const [stepCount, setStepCount] = useState(() => getStepCountFromDifficulty(aiDifficulty));
+  const [availableCards, setAvailableCards] = useState([]);
   const [userSequence, setUserSequence] = useState([]);
   const [showHint, setShowHint] = useState(false);
+  const [hintsUsed, setHintsUsed] = useState(0);
   const [feedback, setFeedback] = useState('Click or tap cards in the correct morning sequence!');
+  const [startTime, setStartTime] = useState(null);
 
-  const resetGame = () => {
+  useEffect(() => {
+    const nextSteps = getStepCountFromDifficulty(aiDifficulty);
+    setStepCount(nextSteps);
+    resetGame(nextSteps);
+  }, [aiDifficulty]);
+
+  const resetGame = (count = stepCount) => {
     soundManager.playGentleClick();
-    setAvailableCards([...ROUTINE_STEPS].sort(() => Math.random() - 0.5));
+    const subset = ROUTINE_STEPS.slice(0, count);
+    setAvailableCards([...subset].sort(() => Math.random() - 0.5));
     setUserSequence([]);
     setShowHint(false);
+    setHintsUsed(0);
     setFeedback('Select what you usually do first after waking up!');
+    setStartTime(Date.now());
   };
 
   const handleSelectCard = (card) => {
@@ -32,13 +46,25 @@ export const RoutineRecall = () => {
     setAvailableCards(prev => prev.filter(item => item.id !== card.id));
 
     // Check progress
-    if (nextSeq.length === ROUTINE_STEPS.length) {
-      // Check if order matches expected sequence 1..4
+    if (nextSeq.length === stepCount) {
       const isCorrect = nextSeq.every((item, idx) => item.order === idx + 1);
 
       if (isCorrect) {
         soundManager.playSoftChime();
         setFeedback('Excellent! You remembered your morning routine correctly! 🌟');
+
+        const totalSeconds = Math.round((Date.now() - (startTime || Date.now())) / 1000);
+
+        // Run ML Prediction Pipeline
+        const mlPrediction = recordSessionAndPredict({
+          gameTitle: 'My Morning Routine Recall',
+          score: stepCount,
+          maxScore: stepCount,
+          accuracy: 1.0,
+          timeSeconds: totalSeconds,
+          attempts: stepCount,
+          hintsUsed: hintsUsed
+        });
 
         setProfile(prev => ({
           ...prev,
@@ -49,15 +75,15 @@ export const RoutineRecall = () => {
           openModal('game_complete', {
             gameKey: 'routine',
             gameTitle: 'My Morning Routine Recall',
-            score: 4,
-            maxScore: 4,
-            timeSeconds: 25,
-            attempts: 1,
+            score: stepCount,
+            maxScore: stepCount,
+            timeSeconds: totalSeconds,
+            attempts: stepCount,
+            prediction: mlPrediction,
             encouragement: 'Excellent! You remembered your morning routine step by step.'
           });
         }, 700);
       } else {
-        // GENTLE HELP (NO FAILURE / NO GAME OVER)
         setFeedback('Good try! Let’s adjust the sequence slightly. 😊');
       }
     }
@@ -75,22 +101,45 @@ export const RoutineRecall = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-teal-100">
         <div>
-          <span className="bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase">
-            Game 2 • Sequential Recall
-          </span>
+          <div className="flex items-center space-x-2">
+            <span className="bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase">
+              Game 2 • Sequential Recall
+            </span>
+            <span className="bg-teal-100 text-teal-900 text-xs font-extrabold px-3 py-1 rounded-full uppercase">
+              {aiDifficulty.toUpperCase()} ({stepCount} Steps)
+            </span>
+          </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-teal-950 mt-1">
             🌅 My Morning Routine
           </h2>
         </div>
 
         <button
-          onClick={resetGame}
+          onClick={() => resetGame(stepCount)}
           className="px-4 py-2 bg-teal-50 hover:bg-teal-100 text-teal-900 font-bold rounded-xl text-sm border border-teal-200 flex items-center space-x-1.5 transition"
         >
           <RotateCcw className="w-4 h-4" />
           <span>Reset Order</span>
         </button>
       </div>
+
+      {/* ML Prediction Telemetry */}
+      {lastPrediction && (
+        <div className="mb-6 p-4 bg-teal-50 border border-teal-200 rounded-2xl text-teal-950 text-sm font-semibold flex items-center justify-between gap-3 animate-fadeIn">
+          <div className="flex items-center space-x-3">
+            <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0" />
+            <div>
+              <span className="text-xs font-extrabold text-teal-800 uppercase tracking-wider block">
+                ML-POWERED ADAPTIVE LEVEL: <strong className="text-teal-950 uppercase">{aiDifficulty}</strong>
+              </span>
+              <p className="text-xs text-gray-600 mt-0.5">{lastPrediction.reason}</p>
+            </div>
+          </div>
+          <span className="bg-amber-100 text-amber-900 text-xs font-extrabold px-2.5 py-1 rounded-lg border border-amber-300 flex-shrink-0">
+            Confidence: {lastPrediction.confidence}%
+          </span>
+        </div>
+      )}
 
       {/* Prompt Banner */}
       <div className="bg-amber-50 rounded-2xl p-4 text-center mb-6 border border-amber-200">
@@ -102,14 +151,14 @@ export const RoutineRecall = () => {
         </p>
       </div>
 
-      {/* User Selected Ordered Sequence Slots */}
+      {/* Ordered Sequence Slots */}
       <div className="mb-8">
         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-          Your Ordered Sequence ({userSequence.length} / 4)
+          Your Ordered Sequence ({userSequence.length} / {stepCount})
         </h4>
 
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 min-h-[100px]">
-          {[0, 1, 2, 3].map((slotIdx) => {
+          {Array.from({ length: stepCount }).map((_, slotIdx) => {
             const item = userSequence[slotIdx];
             return (
               <div
@@ -142,7 +191,7 @@ export const RoutineRecall = () => {
         </div>
       </div>
 
-      {/* Available Choices Cards */}
+      {/* Available Choices */}
       {availableCards.length > 0 && (
         <div className="mb-8">
           <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
@@ -171,7 +220,10 @@ export const RoutineRecall = () => {
       {/* Gentle Hint Toggle */}
       <div className="border-t border-teal-100 pt-4 flex items-center justify-between">
         <button
-          onClick={() => setShowHint(!showHint)}
+          onClick={() => {
+            setShowHint(!showHint);
+            setHintsUsed(prev => prev + 1);
+          }}
           className="text-xs font-bold text-amber-800 hover:text-amber-950 flex items-center space-x-1.5 bg-amber-100 px-3 py-1.5 rounded-xl border border-amber-300"
         >
           <HelpCircle className="w-4 h-4 text-amber-700" />

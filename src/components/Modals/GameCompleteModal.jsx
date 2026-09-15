@@ -75,9 +75,25 @@ export const GameCompleteModal = () => {
         </div>
 
         {/* Supportive Praise */}
-        <div className="bg-amber-50/90 rounded-2xl p-4 mb-6 border border-amber-200 text-amber-950 font-medium text-base">
+        <div className="bg-amber-50/90 rounded-2xl p-4 mb-4 border border-amber-200 text-amber-950 font-medium text-base">
           “{encouragement || `Shabash! You remembered ${score} out of ${maxScore} pairs today.`}”
         </div>
+
+        {/* ML Prediction Feedback Ribbon */}
+        {modalPayload?.prediction && (
+          <div className="bg-teal-50 rounded-2xl p-3.5 mb-6 border border-teal-200 text-teal-950 text-xs font-semibold space-y-1">
+            <p className="font-extrabold text-teal-900 text-sm">
+              ✨ Your next activity has been adjusted based on your performance.
+            </p>
+            <div className="flex items-center justify-center space-x-3 pt-1 text-teal-800">
+              <span>Difficulty: <strong className="uppercase text-teal-950 font-bold">{modalPayload.prediction.difficulty}</strong></span>
+              <span>•</span>
+              <span className="bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-md border border-amber-300">
+                ML Confidence: {modalPayload.prediction.confidence}%
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="grid grid-cols-2 gap-3">
