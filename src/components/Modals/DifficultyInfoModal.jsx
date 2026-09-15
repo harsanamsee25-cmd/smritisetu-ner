@@ -26,7 +26,7 @@ export const DifficultyInfoModal = () => {
           </div>
           <div>
             <span className="text-xs font-bold text-amber-800 uppercase tracking-wide bg-amber-100 px-2 py-0.5 rounded-md">
-              AI Dynamic Personalization Engine
+              Auto-Adjusting Personalization
             </span>
             <h3 className="text-2xl font-extrabold text-teal-950 mt-0.5">
               How SmritiSetu Adapts
@@ -36,18 +36,18 @@ export const DifficultyInfoModal = () => {
 
         {/* Informational Text */}
         <div className="bg-teal-50/80 rounded-2xl p-4 border border-teal-100 mb-6 text-sm sm:text-base leading-relaxed text-gray-700">
-          <p className="mb-2 font-medium">
-            SmritiSetu observes real-time interaction patterns such as average response time, repeated attempts, and hint usage during daily memory exercises.
+          <p className="mb-2 font-bold text-teal-950">
+            Auto-Adjusting: Activity difficulty adapts to recent interaction patterns.
           </p>
-          <p className="font-medium text-teal-900">
-            When Aai takes a little longer, the prototype automatically reduces choice cards (e.g. from 4 pairs to 3 pairs) to ensure activities remain gentle, comfortable, and encouraging.
+          <p className="text-xs sm:text-sm font-medium text-teal-900">
+            When Aai takes a little longer, the system automatically reduces choice cards (e.g. from 4 pairs to 3 pairs) to keep memory exercises comfortable, encouraging, and dignified.
           </p>
         </div>
 
         {/* Live Simulation Metrics */}
         <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200 mb-6 space-y-3">
           <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-            Sample Performance Metrics Observed
+            Interaction Patterns Observed
           </h4>
 
           <div className="flex items-center justify-between text-sm font-semibold text-gray-800">

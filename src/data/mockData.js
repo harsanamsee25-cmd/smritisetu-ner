@@ -10,12 +10,46 @@ export const INITIAL_PATIENT_PROFILE = {
   adherenceRate: 87,
   hydrationCount: 6,
   targetHydration: 8,
-  cognitiveSessionsCompleted: 5,
+  cognitiveSessionsCompleted: 8,
   missedDosesCount: 2,
   status: "Stable",
   syncStatus: "Synced Locally",
   lastSyncedTime: "9:42 AM Today"
 };
+
+export const LANGUAGE_TIERS = {
+  tier1: {
+    title: "Tier 1 • Full Voice Support",
+    badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300",
+    languages: [
+      { id: "as", name: "Assamese (অসমীয়া)", status: "active", label: "✓ Active" },
+      { id: "mn", name: "Manipuri (মৈতৈলোন্)", status: "coming_soon", label: "Coming Soon" },
+      { id: "bn", name: "Bengali (বাংলা)", status: "coming_soon", label: "Coming Soon" },
+      { id: "br", name: "Bodo (বরঅ)", status: "coming_soon", label: "Coming Soon" }
+    ]
+  },
+  tier2: {
+    title: "Tier 2 • Commands Only",
+    badgeClass: "bg-amber-100 text-amber-900 border-amber-300",
+    languages: [
+      { id: "kh", name: "Khasi (Ka Ktien Khasi)", status: "coming_soon", label: "Coming Soon" },
+      { id: "gr", name: "Garo (A·chik)", status: "coming_soon", label: "Coming Soon" },
+      { id: "mz", name: "Mizo (Mizo ṭawng)", status: "coming_soon", label: "Coming Soon" },
+      { id: "ng", name: "Nagamese (নগামিছ)", status: "coming_soon", label: "Coming Soon" }
+    ]
+  }
+};
+
+export const INITIAL_HISTORICAL_SESSIONS = [
+  { id: "s1", date: "Sep 08", sessionScore: 65, gameTitle: "Memory Match", attempts: 6, completionTimeSeconds: 140 },
+  { id: "s2", date: "Sep 09", sessionScore: 68, gameTitle: "Memory Match", attempts: 5, completionTimeSeconds: 132 },
+  { id: "s3", date: "Sep 10", sessionScore: 70, gameTitle: "Routine Recall", attempts: 5, completionTimeSeconds: 125 },
+  { id: "s4", date: "Sep 11", sessionScore: 68, gameTitle: "Memory Match", attempts: 6, completionTimeSeconds: 128 },
+  { id: "s5", date: "Sep 12", sessionScore: 72, gameTitle: "Memory Match", attempts: 4, completionTimeSeconds: 110 },
+  { id: "s6", date: "Sep 13", sessionScore: 70, gameTitle: "Routine Recall", attempts: 4, completionTimeSeconds: 105 },
+  { id: "s7", date: "Sep 14", sessionScore: 75, gameTitle: "Memory Match", attempts: 4, completionTimeSeconds: 100 },
+  { id: "s8", date: "Sep 15", sessionScore: 77, gameTitle: "Memory Match", attempts: 3, completionTimeSeconds: 92 },
+];
 
 export const INITIAL_REMINDERS = [
   {
@@ -25,7 +59,7 @@ export const INITIAL_REMINDERS = [
     titleAssamese: "ৰক্তচাপৰ ঔষধ (Amlodipine 5mg)",
     dosage: "1 Tablet with lukewarm water",
     time: "2:00 PM",
-    status: "upcoming", // upcoming, taken, snoozed, missed
+    status: "upcoming",
     category: "Important",
     audioMessage: "Aai, please take your blood pressure medicine after resting a little bit. - Bimala ❤️",
     sender: "Daughter Bimala"
@@ -127,16 +161,6 @@ export const MISSED_DOSES_LOG = [
   { id: "md-5", date: "Sep 05, 2026", medicine: "Blood Pressure Medicine (Amlodipine)", time: "2:00 PM", status: "Taken", reason: "On schedule", followUp: "No issue" },
 ];
 
-export const COGNITIVE_TREND_DATA = [
-  { day: "Mon", score: 62, completionTimeSeconds: 140, sessions: 1 },
-  { day: "Tue", score: 65, completionTimeSeconds: 132, sessions: 1 },
-  { day: "Wed", score: 68, completionTimeSeconds: 125, sessions: 2 },
-  { day: "Thu", score: 67, completionTimeSeconds: 128, sessions: 1 },
-  { day: "Fri", score: 72, completionTimeSeconds: 110, sessions: 2 },
-  { day: "Sat", score: 75, completionTimeSeconds: 102, sessions: 1 },
-  { day: "Sun", score: 78, completionTimeSeconds: 95,  sessions: 2 },
-];
-
 export const DICTIONARY = {
   en: {
     appTitle: "SmritiSetu NER",
@@ -159,7 +183,7 @@ export const DICTIONARY = {
     todaysSessionHero: "Today's Memory Session",
     sessionHeroSub: "10 minutes • Gentle & Personalized",
     startSession: "Start Today's Session →",
-    aiGentle: "AI Difficulty: Gentle",
+    aiGentle: "Auto-Adjusting: Gentle",
     aiPersonalized: "Personalized for today's performance",
     exerciseTitle: "Let's Exercise Your Memory",
     exerciseSub: "No pressure. Take your time. ❤️",
@@ -201,7 +225,7 @@ export const DICTIONARY = {
     todaysSessionHero: "আজিৰ স্মৃতি অনুশীলন",
     sessionHeroSub: "১০ মিনিট • সহজ আৰু মৰমিয়াল",
     startSession: "অনুশীলন আৰম্ভ কৰক →",
-    aiGentle: "এআই স্তৰ: অতি সহজ",
+    aiGentle: "স্বয়ং-সামঞ্জস্যপূৰ্ণ: অতি সহজ",
     aiPersonalized: "আজিৰ বাবে বিশেষভাৱে প্ৰস্তুত",
     exerciseTitle: "আহক, স্মৃতিৰ ব্যায়াম কৰোঁ",
     exerciseSub: "কোনো খৰখেদা নাই। ধীৰে ধীৰে কৰক। ❤️",

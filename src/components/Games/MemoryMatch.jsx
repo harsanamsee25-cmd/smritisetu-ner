@@ -93,11 +93,11 @@ export const MemoryMatch = () => {
         const nextStreak = unsuccessfulStreak + 1;
         setUnsuccessfulStreak(nextStreak);
 
-        // AI Dynamic Difficulty Trigger Simulation
+        // Dynamic Difficulty Trigger Simulation (4 pairs -> 3 pairs)
         if (nextStreak >= 3 && pairCount > 3 && !aiAdapted) {
           setTimeout(() => {
             setAiAdapted(true);
-            setFeedbackMsg("AI Adaptation: Let's make this a little easier for you. 🌿");
+            setFeedbackMsg("Auto-Adjusting: Let's make this a little easier for you. ❤️");
             // Automatically switch from 4 pairs to 3 pairs for comfort
             setTimeout(() => {
               setPairCount(3);
@@ -136,13 +136,13 @@ export const MemoryMatch = () => {
         </div>
       </div>
 
-      {/* AI Difficulty Simulation Alert Banner */}
+      {/* Auto-Adjusting Difficulty Simulation Alert Banner */}
       {aiAdapted && (
         <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl text-amber-950 text-sm font-semibold flex items-center space-x-3 animate-fadeIn">
           <Sparkles className="w-6 h-6 text-amber-600 flex-shrink-0" />
           <div>
-            <strong className="block text-amber-900 text-base font-extrabold">AI Difficulty Adjustment</strong>
-            You took a little longer today, so SmritiSetu gently reduced the card count to keep it comfortable.
+            <strong className="block text-amber-900 text-base font-extrabold">Auto-Adjusting Difficulty</strong>
+            You took a little longer today, so SmritiSetu gently reduced the card count from 4 pairs to 3 pairs.
           </div>
         </div>
       )}

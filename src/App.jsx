@@ -18,6 +18,7 @@ import { OfflineSyncModal } from './components/Modals/OfflineSyncModal';
 import { PatientProfileModal } from './components/Modals/PatientProfileModal';
 import { NotificationDrawer } from './components/Modals/NotificationDrawer';
 import { AddReminderModal } from './components/Modals/AddReminderModal';
+import { LanguageTiersModal } from './components/Modals/LanguageTiersModal';
 
 const MainLayout = () => {
   const { isIntroFinished, activeTab, viewMode } = useApp();
@@ -54,6 +55,7 @@ const MainLayout = () => {
       <PatientProfileModal />
       <NotificationDrawer />
       <AddReminderModal />
+      <LanguageTiersModal />
     </div>
   );
 };

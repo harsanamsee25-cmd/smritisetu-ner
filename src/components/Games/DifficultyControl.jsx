@@ -20,13 +20,13 @@ export const DifficultyControl = () => {
           </div>
           <div>
             <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
-              <span>Smart Dynamic Difficulty</span>
+              <span>Auto-Adjusting Difficulty</span>
               <span className="text-xs bg-amber-400 text-teal-950 px-2 py-0.5 rounded-full font-bold uppercase">
-                AI Powered
+                Adaptive
               </span>
             </h3>
             <p className="text-xs text-teal-200 font-medium">
-              Automatically adjusts memory card count & hints based on response speed
+              Activity difficulty adapts to recent interaction patterns
             </p>
           </div>
         </div>
@@ -34,7 +34,7 @@ export const DifficultyControl = () => {
         <button
           onClick={() => openModal('difficulty_info')}
           className="p-2 rounded-xl bg-teal-800 hover:bg-teal-700 text-amber-300 transition"
-          title="How SmritiSetu Adapts Info"
+          title="How Smritisetu Adapts Info"
         >
           <Info className="w-5 h-5" />
         </button>
