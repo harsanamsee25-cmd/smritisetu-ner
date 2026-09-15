@@ -22,6 +22,7 @@ export const LANGUAGE_TIERS = {
     title: "Tier 1 • Full Voice Support",
     badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300",
     languages: [
+      { id: "en", name: "English (English)", status: "active", label: "✓ Active" },
       { id: "as", name: "Assamese (অসমীয়া)", status: "active", label: "✓ Active" },
       { id: "mn", name: "Manipuri (মৈতৈলোন্)", status: "coming_soon", label: "Coming Soon" },
       { id: "bn", name: "Bengali (বাংলা)", status: "coming_soon", label: "Coming Soon" },
