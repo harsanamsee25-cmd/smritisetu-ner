@@ -54,15 +54,12 @@ export const Header = () => {
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Language Switch Button */}
             <button
-              onClick={() => {
-                soundManager.playGentleClick();
-                setLang(lang === 'en' ? 'as' : 'en');
-              }}
+              onClick={() => openModal('languages')}
               className="px-2.5 py-1.5 rounded-xl bg-white border border-teal-200 text-teal-900 text-xs sm:text-sm font-extrabold hover:bg-teal-50 flex items-center space-x-1 shadow-sm"
-              title="Click to Switch Language (English / অসমীয়া)"
+              title="Change Language"
             >
               <Globe className="w-4 h-4 text-teal-700" />
-              <span>{lang === 'en' ? 'ENG | অসমীয়া' : 'অসমীয়া | ENG'}</span>
+              <span>{lang === 'en' ? '🌐 English' : '🌐 অসমীয়া'}</span>
             </button>
 
             {/* Audio Toggle */}

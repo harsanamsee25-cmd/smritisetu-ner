@@ -47,14 +47,11 @@ export const PatientHome = () => {
 
               {/* Language Switcher Pill */}
               <button
-                onClick={() => {
-                  soundManager.playGentleClick();
-                  setLang(lang === 'en' ? 'as' : 'en');
-                }}
-                className="bg-amber-400 hover:bg-amber-300 text-teal-950 font-extrabold text-xs px-3.5 py-1 rounded-full border border-amber-300 shadow-sm transition active:scale-95 flex items-center space-x-1"
-                title="Click to Switch Language (English / অসমীয়া)"
+                onClick={() => openModal('languages')}
+                className="bg-amber-400 hover:bg-amber-300 text-teal-950 font-extrabold text-xs px-3.5 py-1.5 rounded-full border border-amber-300 shadow-sm transition active:scale-95 flex items-center space-x-1"
+                title="Change Language"
               >
-                <span>🌐 {lang === 'en' ? 'English | অসমীয়া' : 'অসমীয়া | English'}</span>
+                <span>🌐 Language: <strong>{lang === 'en' ? 'English (ENG)' : 'অসমীয়া (Assamese)'}</strong></span>
               </button>
             </div>
 
