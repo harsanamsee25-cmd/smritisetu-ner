@@ -67,7 +67,7 @@ export const PatientHome = () => {
             </p>
 
             <p className="text-sm sm:text-base text-teal-100 max-w-xl font-medium pt-1">
-              Have a peaceful morning. We have prepared your gentle memory exercises and family voice notes for today.
+              {t('heroDesc')}
             </p>
           </div>
 
@@ -95,7 +95,7 @@ export const PatientHome = () => {
         <div className="space-y-3 text-center md:text-left">
           <div className="inline-flex items-center space-x-2 bg-black/20 backdrop-blur px-3.5 py-1 rounded-full text-xs font-extrabold text-amber-100 uppercase tracking-wider">
             <Sparkles className="w-4 h-4 text-amber-200" />
-            <span>Recommended Activity</span>
+            <span>{t('recommendedActivity')}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
@@ -136,7 +136,7 @@ export const PatientHome = () => {
             onClick={() => setActiveTab('reminders')}
             className="text-sm font-bold text-teal-700 hover:text-teal-900 underline"
           >
-            View All Timeline →
+            {t('viewTimeline')}
           </button>
         </div>
 
@@ -155,13 +155,13 @@ export const PatientHome = () => {
                   </div>
                   <div>
                     <span className="text-xs font-bold text-rose-700 uppercase tracking-wider bg-rose-100 px-2.5 py-0.5 rounded-full">
-                      Important Medicine
+                      {t('importantMedicine')}
                     </span>
                     <h3 className="text-2xl font-extrabold text-gray-900 mt-1">
-                      {medReminder.title}
+                      {lang === 'as' ? (medReminder.titleAssamese || medReminder.title) : medReminder.title}
                     </h3>
                     <p className="text-sm font-semibold text-teal-800">
-                      {medReminder.titleAssamese}
+                      {lang === 'as' ? medReminder.title : medReminder.titleAssamese}
                     </p>
                   </div>
                 </div>
@@ -223,13 +223,13 @@ export const PatientHome = () => {
                   </div>
                   <div>
                     <span className="text-xs font-bold text-sky-700 uppercase tracking-wider bg-sky-100 px-2.5 py-0.5 rounded-full">
-                      Daily Routine
+                      {t('dailyRoutine')}
                     </span>
                     <h3 className="text-2xl font-extrabold text-gray-900 mt-1">
-                      {hydReminder.title}
+                      {lang === 'as' ? (hydReminder.titleAssamese || hydReminder.title) : hydReminder.title}
                     </h3>
                     <p className="text-sm font-semibold text-teal-800">
-                      {hydReminder.titleAssamese}
+                      {lang === 'as' ? hydReminder.title : hydReminder.titleAssamese}
                     </p>
                   </div>
                 </div>
