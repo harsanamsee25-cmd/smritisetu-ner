@@ -17,6 +17,7 @@ import { DifficultyInfoModal } from './components/Modals/DifficultyInfoModal';
 import { OfflineSyncModal } from './components/Modals/OfflineSyncModal';
 import { PatientProfileModal } from './components/Modals/PatientProfileModal';
 import { NotificationDrawer } from './components/Modals/NotificationDrawer';
+import { AddReminderModal } from './components/Modals/AddReminderModal';
 
 const MainLayout = () => {
   const { isIntroFinished, activeTab, viewMode } = useApp();
@@ -52,6 +53,7 @@ const MainLayout = () => {
       <OfflineSyncModal />
       <PatientProfileModal />
       <NotificationDrawer />
+      <AddReminderModal />
     </div>
   );
 };

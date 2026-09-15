@@ -28,13 +28,23 @@ export const RemindersPage = () => {
   return (
     <div className="space-y-8 pb-12">
       {/* Reminders Timeline Header */}
-      <div className="bg-gradient-to-r from-teal-900 via-teal-800 to-tea-700 text-white rounded-3xl p-6 sm:p-8 shadow-lifted border border-teal-700">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-          🔔 {t('reminders')}
-        </h1>
-        <p className="text-lg font-bold text-amber-300 mt-1">
-          Daily Care Timeline & Family Messages
-        </p>
+      <div className="bg-gradient-to-r from-teal-900 via-teal-800 to-tea-700 text-white rounded-3xl p-6 sm:p-8 shadow-lifted border border-teal-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            🔔 {t('reminders')}
+          </h1>
+          <p className="text-lg font-bold text-amber-300 mt-1">
+            Daily Care Timeline & Family Messages
+          </p>
+        </div>
+
+        <button
+          onClick={() => openModal('add_reminder')}
+          className="px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-teal-950 font-extrabold text-sm shadow-md flex items-center space-x-2 transition active:scale-95"
+        >
+          <Plus className="w-5 h-5 text-teal-950" />
+          <span>➕ Add New Reminder</span>
+        </button>
       </div>
 
       {/* TODAY'S TIMELINE LIST */}

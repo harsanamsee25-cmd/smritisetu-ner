@@ -164,6 +164,21 @@ export const AppProvider = ({ children }) => {
   };
 
   // Helper action: Mark Reminder as Taken
+  const addReminder = (newRem) => {
+    soundManager.playSoftChime();
+    const reminderObj = {
+      id: `rem-${Date.now()}`,
+      status: 'upcoming',
+      category: newRem.type === 'medicine' ? 'Important' : newRem.type === 'hydration' ? 'Routine' : 'Cognitive',
+      ...newRem
+    };
+    setReminders(prev => [...prev, reminderObj]);
+    setNotifications(prev => [
+      { id: `n-${Date.now()}`, title: 'New Reminder Added', desc: `${newRem.title} scheduled for ${newRem.time}`, time: 'Just now', read: false },
+      ...prev
+    ]);
+  };
+
   const markReminderTaken = (id) => {
     soundManager.playSoftChime();
     setReminders(prev => prev.map(rem => {
@@ -264,6 +279,7 @@ export const AppProvider = ({ children }) => {
       setProfile,
       reminders,
       setReminders,
+      addReminder,
       markReminderTaken,
       snoozeReminder,
       voiceNotes,
