@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Accessibility Font Scalers */
+html.scale-sm {
+  font-size: 14px;
+}
+html.scale-md {
+  font-size: 16px;
+}
+html.scale-lg {
+  font-size: 19px;
+}
+
+/* Custom Gamocha Pattern Border Accent */
+.gamocha-border {
+  border-top: 4px solid #C82333;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #C82333 0,
+    #C82333 8px,
+    #FFFFFF 8px,
+    #FFFFFF 16px
+  );
+  background-size: 100% 4px;
+  background-repeat: no-repeat;
+}
+
+.gamocha-side-accent {
+  position: relative;
+}
+.gamocha-side-accent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #C82333 0%, #E63946 50%, #C82333 100%);
+  border-radius: 4px 0 0 4px;
+}
+
+/* 3D Flip Card Mechanics */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Smooth Transition Rules */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* High Contrast Focus States for Accessibility */
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 3px solid #1E4D40;
+  outline-offset: 3px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
